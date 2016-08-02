@@ -9,8 +9,8 @@
 
 #FORMATY
 
-@Nick@
-@Nick
+@Nick@ <br />
+@Nick <br />
 Nick@
 
 #TRYB CZUŁY
