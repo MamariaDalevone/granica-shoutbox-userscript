@@ -102,7 +102,7 @@ function parseMessage() {
 
       for (var j = 0; j < usersCount; ++j) {
         if (nick.toLowerCase() == users[j].toLowerCase()) {
-          messageNode.value = messageNode.value.replace(regexp[i], colors[j] == "none" ? "[b]" + users[j] + "[/b]" + endingChar : [b][color=#" + colors[j] + "]" + users[j] + "[/color][/b]" + endingChar);
+          messageNode.value = messageNode.value.replace(regexp[i], colors[j] == "none" ? "[b]" + users[j] + "[/b]" + endingChar : "[b][color=#" + colors[j] + "]" + users[j] + "[/color][/b]" + endingChar);
         }
       }
     }
