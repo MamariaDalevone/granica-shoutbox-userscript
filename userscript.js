@@ -90,7 +90,7 @@ function parseMessage() {
 
   for (var i = 0; i < regexpLength; ++i) {
     if (regexp[i].test(messageNode.value) == true) {
-      var nick = regexp.exec(messageNode.value);
+      var nick = regexp[i].exec(messageNode.value);
       if (i == 0)
         nick = nick[0].substring(1, nick[0].length - 1);
       else if (i == 1)
