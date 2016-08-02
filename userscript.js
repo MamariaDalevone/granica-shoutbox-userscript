@@ -8,12 +8,8 @@
 // @grant       none
 // ==/UserScript==
 
-// TRYB CZUŁY (false - nieaktywny, true - aktywny)
-var sensitiveMode = false;
-
 // ZNAK POJAWIAJĄCY SIĘ PO WIADOMOŚCI:
 var endingChar = ":";
-
 
 
 function setCookie(cookieName, cookieValue, expirationDays) {
@@ -81,10 +77,7 @@ function addColor(color) {
 function parseMessage() {
   var messageNode = document.getElementById("mChatMessage");
 
-  if (sensitiveMode)
-    var regexp = [/\@\w+\@/, /\@\w+/, /\w+\@/, /w+/];
-  else
-    var regexp = [/\@\w+\@/, /\@\w+/, /\w+\@/];
+  var regexp = [/\@\w+\@/, /\@\w+/, /\w+\@/];
 
   var regexpLength = regexp.length;
 
