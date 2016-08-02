@@ -100,9 +100,9 @@ function parseMessage() {
 
       usersCount = users.length;
 
-      for (var i = 0; i < usersCount; ++i) {
-        if (nick.toLowerCase() == users[i].toLowerCase()) {
-          messageNode.value = messageNode.value.replace(regexp, colors[i] == "none" ? "[b]" + users[i] + "[/b]" : [b][color=#" + colors[i] + "]" + users[i] + "[/color][/b]" + endingChar);
+      for (var j = 0; j < usersCount; ++j) {
+        if (nick.toLowerCase() == users[j].toLowerCase()) {
+          messageNode.value = messageNode.value.replace(regexp[i], colors[j] == "none" ? "[b]" + users[j] + "[/b]" + endingChar : [b][color=#" + colors[j] + "]" + users[j] + "[/color][/b]" + endingChar);
         }
       }
     }
