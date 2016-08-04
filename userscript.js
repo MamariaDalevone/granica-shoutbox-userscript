@@ -34,6 +34,18 @@ function getUsernames() {
     var nick = nickregexp.exec(nodes[i].getAttribute("onclick"));
     nick = nick[0].substring(1, (nick[0].length - 1));
 
+    var usersCount = users.length;
+    var iterator = 0;
+
+    do {
+      if (users[iterator].toLowerCase() == nick.toLowerCase()) {
+        nickAdded = true;
+        usersCount = iterator;
+      } else {
+        ++iterator;
+      }
+    } while (iterator < usersCount)
+
     if (!isUserAdded(nick)) {
       addUser(nick);
 
@@ -45,6 +57,18 @@ function getUsernames() {
       color = color[0].substring(1);
 
       colors[colors.length] = color;
+      }
+    } else {
+      var color = colorregexp.exec(nodes[i].getAttribute("onclick"));
+
+      if (color === null) {
+        color = "none";
+
+        verifyColor(iterator, color);
+      } else {
+        color = color[0].substring(1);
+
+        verifyColor(iterator, color);
       }
     }
   }
@@ -71,6 +95,12 @@ function addUser(nick) {
 
 function addColor(color) {
   colors[colors.length] = color;
+}
+
+function verifyColor(arrayPosition, color) {
+  if (colors[arrayPosition] != color) {
+    colors[arrayPosition] = color;
+  }
 }
 
 
