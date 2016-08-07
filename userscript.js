@@ -8,8 +8,14 @@
 // @grant       none
 // ==/UserScript==
 
-// ZNAK POJAWIAJĄCY SIĘ PO WIADOMOŚCI:
+// ZNAK PRZED WYRÓŻNIENIEM NICKU W POLU WIADOMOŚCI
+var nickDifferentiator = "@";
+
+// ZNAK POJAWIAJĄCY SIĘ PO WIADOMOŚCI
 var endingChar = ":";
+
+// WYRÓŻNIENIE OSTATNIEGO SHOUTA
+var lastShoutDifferentiator = "@@";
 
 
 function setCookie(cookieName, cookieValue, expirationDays) {
@@ -107,29 +113,41 @@ function verifyColor(arrayPosition, color) {
 function parseMessage() {
   var messageNode = document.getElementById("mChatMessage");
 
-  var regexp = [/\@\w+\@/, /\@\w+/, /\w+\@/];
+  var regexp = [new RegExp(nickDifferentiator+"\\w+"), new RegExp("\\w+"+nickDifferentiator)];
+  var lastShoutRegexp = new RegExp(lastShoutDifferentiator);
 
   var regexpLength = regexp.length;
+
+  if (lastShoutRegexp.test(messageNode.value) == true) {
+    var onClickAction = document.getElementsByClassName("mChatScriptLink")[document.getElementsByClassName("mChatScriptLink").length - 1].getAttribute("onclick");
+    onClickAction = /\'.*\'/.exec(onClickAction);
+    onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
+    messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar);
+  }
 
   for (var i = 0; i < regexpLength; ++i) {
     if (regexp[i].test(messageNode.value) == true) {
       var nick = regexp[i].exec(messageNode.value);
       if (i == 0)
-        nick = nick[0].substring(1, nick[0].length - 1);
-      else if (i == 1)
         nick = nick[0].substring(1);
-      else if (i == 2)
+      else if (i == 1)
         nick = nick[0].substring(0, nick[0].length - 1);
 
       usersCount = users.length;
 
       for (var j = 0; j < usersCount; ++j) {
         if (nick.toLowerCase() == users[j].toLowerCase()) {
-          messageNode.value = messageNode.value.replace(regexp[i], colors[j] == "none" ? "[b]" + users[j] + "[/b]" + endingChar : "[b][color=#" + colors[j] + "]" + users[j] + "[/color][/b]" + endingChar);
+          replace(messageNode, regexp[i], j)
         }
       }
     }
   }
+}
+
+
+function replace(node, regexp, iterator) {
+  console.log(node);
+  node.value = node.value.replace(regexp, colors[iterator] == "none" ? "[b]" + users[iterator] + "[/b]" + endingChar : "[b][color=#" + colors[iterator] + "]" + users[iterator] + "[/color][/b]" + endingChar);
 }
 
 
