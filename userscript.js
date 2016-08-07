@@ -114,15 +114,21 @@ function parseMessage() {
   var messageNode = document.getElementById("mChatMessage");
 
   var regexp = [new RegExp(nickDifferentiator+"\\w+"), new RegExp("\\w+"+nickDifferentiator)];
-  var lastShoutRegexp = new RegExp(lastShoutDifferentiator);
+  var lastShoutRegexp = new RegExp(lastShoutDifferentiator + "\\d*\\s");
 
   var regexpLength = regexp.length;
 
   if (lastShoutRegexp.test(messageNode.value) == true) {
-    var onClickAction = document.getElementsByClassName("mChatScriptLink")[document.getElementsByClassName("mChatScriptLink").length - 1].getAttribute("onclick");
+    var number = lastShoutRegexp.exec(messageNode.value);
+    if (number[0].length == 3)
+      number = document.getElementsByClassName("mChatScriptLink").length - 1;
+    else {
+      number = document.getElementsByClassName("mChatScriptLink").length - /\d/.exec(number[0])[0];
+    }
+    var onClickAction = document.getElementsByClassName("mChatScriptLink")[number].getAttribute("onclick");
     onClickAction = /\'.*\'/.exec(onClickAction);
     onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
-    messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar);
+    messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar + " ");
   }
 
   for (var i = 0; i < regexpLength; ++i) {
@@ -146,7 +152,6 @@ function parseMessage() {
 
 
 function replace(node, regexp, iterator) {
-  console.log(node);
   node.value = node.value.replace(regexp, colors[iterator] == "none" ? "[b]" + users[iterator] + "[/b]" + endingChar : "[b][color=#" + colors[iterator] + "]" + users[iterator] + "[/color][/b]" + endingChar);
 }
 
@@ -200,7 +205,7 @@ setInterval(function(){ getUsernames(); setCookie("ScriptUsers", users, 1000); s
 
 {
   var input = document.getElementById("mChatMessage");
-  input.onkeypress = function() { parseMessage(); };
+  input.onkeyup = function() { parseMessage(); };
 }
 
 setCookie("ScriptUsers", users, 1000);
