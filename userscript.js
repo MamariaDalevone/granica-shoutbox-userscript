@@ -17,6 +17,9 @@ var endingChar = ":";
 // WYRÓŻNIENIE OSTATNIEGO SHOUTA
 var lastShoutDifferentiator = "@@";
 
+// WYRÓŻNIENIE JAKIEJŚ OSOBY W SHOUCIE, ALE BEZ WOŁANIA
+var userVocative = "!!";
+
 
 function setCookie(cookieName, cookieValue, expirationDays) {
   var date = new Date();
@@ -113,37 +116,78 @@ function verifyColor(arrayPosition, color) {
 function parseMessage() {
   var messageNode = document.getElementById("mChatMessage");
 
-  var regexp = [new RegExp(nickDifferentiator+"\\w+"), new RegExp("\\w+"+nickDifferentiator)];
-  var lastShoutRegexp = new RegExp(lastShoutDifferentiator + "\\d*\\s");
+  //https://gfycat.com/SoggyUnfitAllensbigearedbat
+  {
+    var lastShoutRegexp = new RegExp(lastShoutDifferentiator + "\\d*\\s");
 
-  var regexpLength = regexp.length;
-
-  if (lastShoutRegexp.test(messageNode.value) == true) {
-    var number = lastShoutRegexp.exec(messageNode.value);
-    if (number[0].length == 3)
-      number = document.getElementsByClassName("mChatScriptLink").length - 1;
-    else {
-      number = document.getElementsByClassName("mChatScriptLink").length - /\d/.exec(number[0])[0];
+    if (lastShoutRegexp.test(messageNode.value) === true) {
+      var number = lastShoutRegexp.exec(messageNode.value)[0];
+      if (number.length == 3)
+        number = document.getElementsByClassName("mChatScriptLink").length - 1;
+      else {
+        number = document.getElementsByClassName("mChatScriptLink").length - /\d/.exec(number)[0];
+      }
+      var onClickAction = document.getElementsByClassName("mChatScriptLink")[number].getAttribute("onclick");
+      onClickAction = /\'.*\'/.exec(onClickAction);
+      onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
+      messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar + " ");
     }
-    var onClickAction = document.getElementsByClassName("mChatScriptLink")[number].getAttribute("onclick");
-    onClickAction = /\'.*\'/.exec(onClickAction);
-    onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
-    messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar + " ");
   }
 
-  for (var i = 0; i < regexpLength; ++i) {
-    if (regexp[i].test(messageNode.value) == true) {
-      var nick = regexp[i].exec(messageNode.value);
-      if (i == 0)
-        nick = nick[0].substring(1);
-      else if (i == 1)
-        nick = nick[0].substring(0, nick[0].length - 1);
+  //https://gfycat.com/RealGiganticFlickertailsquirrel
+  {
+    var vocativeRegexp = [new RegExp(userVocative + "\\d*\\s"), new RegExp(userVocative + "\\w*\\s")];
 
-      usersCount = users.length;
+    var regexpLength = vocativeRegexp.length;
 
-      for (var j = 0; j < usersCount; ++j) {
-        if (nick.toLowerCase() == users[j].toLowerCase()) {
-          replace(messageNode, regexp[i], j)
+    for (var i = 0; i < regexpLength; ++i) {
+      if (vocativeRegexp[i].test(messageNode.value) === true) {
+        var result = vocativeRegexp[i].exec(messageNode.value)[0];
+
+        if (result.length > 5) {
+          //!!nick
+
+          result = result.substring(2, 3).toUpperCase() + result.substring(3, result.length - 1);
+
+          var indexOfResult = users.indexOf(result);
+
+          messageNode.value = messageNode.value.replace(vocativeRegexp[i], colors[indexOfResult] == "none" ? "[b]" + users[indexOfResult] + "[/b]" + endingChar : "[b][color=#" + colors[indexOfResult] + "]" + users[indexOfResult] + "[/color][/b] ");
+        } else {
+          //!!number
+
+          if (result.length == 3)
+            result = document.getElementsByClassName("mChatScriptLink").length - 1;
+          else
+            result = document.getElementsByClassName("mChatScriptLink").length - /\d+/.exec(result);
+
+          var onClickAction = document.getElementsByClassName("mChatScriptLink")[result].getAttribute("onclick");
+          onClickAction = /\'.*\'/.exec(onClickAction);
+          onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
+          messageNode.value = messageNode.value.replace(vocativeRegexp[i], onClickAction + " ");
+        }
+      }
+    }
+  }
+
+  //https://gfycat.com/IllfatedHairyJuliabutterfly
+  {
+    var regexp = [new RegExp(nickDifferentiator+"\\w+"), new RegExp("\\w+"+nickDifferentiator)];
+    var regexpLength = regexp.length;
+
+    for (var i = 0; i < regexpLength; ++i) {
+      if (regexp[i].test(messageNode.value) == true) {
+        var nick = regexp[i].exec(messageNode.value);
+        if (i == 0)
+          nick = nick[0].substring(1);
+        else if (i == 1)
+          nick = nick[0].substring(0, nick[0].length - 1);
+
+        usersCount = users.length;
+
+        for (var j = 0; j < usersCount; ++j) {
+          if (nick.toLowerCase() == users[j].toLowerCase()) {
+            replaceInNode(messageNode, regexp[i], j)
+          }
         }
       }
     }
@@ -151,7 +195,7 @@ function parseMessage() {
 }
 
 
-function replace(node, regexp, iterator) {
+function replaceInNode(node, regexp, iterator) {
   node.value = node.value.replace(regexp, colors[iterator] == "none" ? "[b]" + users[iterator] + "[/b]" + endingChar : "[b][color=#" + colors[iterator] + "]" + users[iterator] + "[/color][/b]" + endingChar);
 }
 
