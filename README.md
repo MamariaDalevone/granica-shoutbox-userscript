@@ -9,12 +9,19 @@
 
 #FORMATY
 
+##WOŁANIE ZA POMOCĄ NICKU
+
 @Nick@ <br />
 @Nick <br />
 Nick@
 
-#TRYB CZUŁY
-Pozwala na dopasowanie nicku do koloru już po wpisaniu nicku, bez żadnych wyróżników. Można go włączyć za pomocą zmiennej w linii 12.
+##WOŁANIE USERÓW Z POPRZEDNICH SHOUTÓW
+@@ // ostatni shout <br />
+@@x // x shout od końca
 
-#ZNAK KOŃCZĄCY
-Zmienia znak wstawiany po wykryciu nicku. Domyślnie jest to dwukropek, ale można go zmienić modyfikując zawartość zmiennej w linii 15.
+##WYRÓŻNIENIE NICKU BEZ WOŁANIA
+!! // wyróżnienie użytkownika z ostatniego shouta <br />
+!!x // wyróżnienie użytkownika z x shoutów od końca
+
+#KONFIGURACJA
+Wszelakie informacje dotyczące konfiguracji są dostępne w skrypcie jako globalne zmienne umieszczone na początku skryptu i opatrzone dodatkowym komentarzem.
