@@ -14,7 +14,7 @@ var nickDifferentiator = "@";
 
 // ZNAK POJAWIAJĄCY SIĘ PO WIADOMOŚCI
 // np: @Akkarin → [b][color=#00CCCC]Akkarin[/color][/b]:
-var endingChar = ":";
+var endingChar = ",";
 
 // WYRÓŻNIENIE OSTATNIEGO SHOUTA
 // np: @@2 → [b][color=#FFFF33]Lothia[/color][/b]:
