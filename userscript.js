@@ -87,6 +87,7 @@ function isUserAdded(nick) {
 
 function addUser(nick) {
   users[users.length] = nick;
+  usersLowerCase[usersLowerCase.length] = nick.toLowerCase();
 }
 
 
@@ -265,3 +266,7 @@ setInterval(function(){ getUsernames(); setCookie("ScriptUsers", users, 1000); s
 
 setCookie("ScriptUsers", users, 1000);
 setCookie("ScriptColors", colors, 1000);
+
+{
+  var version = "1";
+}
