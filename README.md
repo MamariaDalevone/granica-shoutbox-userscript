@@ -17,7 +17,9 @@ Nick@
 
 ##WOŁANIE USERÓW Z POPRZEDNICH SHOUTÓW
 @@ // ostatni shout <br />
-@@x // x shout od końca
+@@x // x shout od końca <br />
+
+W używaniu tej funkcji przydaje się małe usprawnienie - mając włączony skrypt, "@" przy nicku to już nie tylko małpy, bo mają dodany znacznik jakiej cyfry należy użyć, aby zawołać daną osobę.
 
 ##WYRÓŻNIENIE NICKU BEZ WOŁANIA
 !! // wyróżnienie użytkownika z ostatniego shouta <br />
