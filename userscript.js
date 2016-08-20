@@ -34,20 +34,25 @@ function setCookie(cookieName, cookieValue, expirationDays) {
   document.cookie = cookieName + "=" + cookieValue + "; " + expiresIn;
 }
 
+function appendNumbers() {
+  var nodes = document.getElementsByClassName("mChatScriptLink");
+
+  if (nodesCount < nodes.length) {
+    nodesCount = nodes.length;
+
+    for (var i = 0; i < nodesCount; ++i) {
+      nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace(/\@\d*/, "@" + (i + 1));
+    }
+
+    getUsernames();
+  }
+}
 
 function getUsernames() {
   var nodes = document.getElementsByClassName("mChatScriptLink");
 
   var nickregexp = /\]\w+\[/;
   var colorregexp = /\#\w+/;
-
-  if (nodesCount < nodes.length) {
-    nodesCount = nodes.length;
-
-    for (var i = 0; i < nodesCount; ++i) {
-      nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace("@", "@" + (i + 1));
-    }
-  }
 
   for (var i = 0; i < nodesCount; ++i) {
 
@@ -66,6 +71,10 @@ function getUsernames() {
 
         addColor(color);
       }
+
+
+      setCookie("ScriptUsers", users, 1000);
+      setCookie("ScriptColors", colors, 1000);
     } else {
       var color = colorregexp.exec(nodes[i].getAttribute("onclick"));
 
@@ -74,22 +83,10 @@ function getUsernames() {
       else
         color = color[0].substring(1);
 
-      verifyColor(usersLowerCase.indexOf(nick.toLowerCase()), color);
+      if (!verifyColor(usersLowerCase.indexOf(nick.toLowerCase()), color))
+        setCookie("ScriptColors", colors, 1000);
     }
   }
-}
-
-
-function isUserAdded(nick) {
-  var usersCount = users.length;
-
-  for (var i = 0; i < usersCount; ++i) {
-    if (nick == users[i]) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 
@@ -107,7 +104,11 @@ function addColor(color) {
 function verifyColor(arrayPosition, color) {
   if (colors[arrayPosition] != color) {
     colors[arrayPosition] = color;
+
+    return false;
   }
+
+  return true;
 }
 
 
@@ -257,8 +258,8 @@ if (document.cookie !== "") {
   if (/ScriptColors\=[A-Z0-9\,]+/i.test(document.cookie) !== false)
     parseCookie(/ScriptColors\=[A-Z0-9\,]+/i.exec(document.cookie)[0]);
 }
-getUsernames();
-setInterval(function(){ getUsernames(); setCookie("ScriptUsers", users, 1000); setCookie("ScriptColors", colors, 1000); }, 5000);
+appendNumbers();
+setInterval(function(){ appendNumbers(); }, 100);
 
 {
   var usersLength = users.length;
