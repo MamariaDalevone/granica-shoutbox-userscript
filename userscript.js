@@ -14,7 +14,7 @@ var nickDifferentiator = "@";
 
 // ZNAK POJAWIAJĄCY SIĘ PO WIADOMOŚCI
 // np: @Akkarin → [b][color=#00CCCC]Akkarin[/color][/b]:
-var endingChar = ":";
+var endingChar = ",";
 
 // WYRÓŻNIENIE OSTATNIEGO SHOUTA
 // np: @@2 → [b][color=#FFFF33]Lothia[/color][/b]:
@@ -24,6 +24,8 @@ var lastShoutDifferentiator = "@@";
 // np: !!2 → [b][color=#FFFF33]Lothia[/color][/b]
 var userVocative = "!!";
 
+
+var nodesCount = 0;
 
 function setCookie(cookieName, cookieValue, expirationDays) {
   var date = new Date();
@@ -39,7 +41,13 @@ function getUsernames() {
   var nickregexp = /\]\w+\[/;
   var colorregexp = /\#\w+/;
 
-  var nodesCount = nodes.length;
+  if (nodesCount < nodes.length) {
+    nodesCount = nodes.length;
+
+    for (var i = 0; i < nodesCount; ++i) {
+      nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace("@", "@" + (i + 1));
+    }
+  }
 
   for (var i = 0; i < nodesCount; ++i) {
 
@@ -151,7 +159,7 @@ function parseMessage() {
             var indexOfNick = users.indexOf(nick);
 
             if (indexOfNick != -1) {
-              messageNode.value = messageNode.value.replace(vocativeRegexp[i], colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b]" + endingChar : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ");
+              messageNode.value = messageNode.value.replace(matches[j], colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ");
             }
           } else {
             // used pattern is !!number
@@ -266,7 +274,3 @@ setInterval(function(){ getUsernames(); setCookie("ScriptUsers", users, 1000); s
 
 setCookie("ScriptUsers", users, 1000);
 setCookie("ScriptColors", colors, 1000);
-
-{
-  var version = "1";
-}
