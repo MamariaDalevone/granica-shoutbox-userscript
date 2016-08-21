@@ -24,6 +24,10 @@ var lastShoutDifferentiator = "@@";
 // np: !!2 → [b][color=#FFFF33]Lothia[/color][/b]
 var userVocative = "!!";
 
+// ZNAK DO WOŁANIA OBOK NICKU
+// np: @3 Habentes - niedziela, 21 sie 2016, 13:01
+var callUserSign = "#";
+
 
 var nodesCount = 0;
 
@@ -41,7 +45,12 @@ function appendNumbers() {
     nodesCount = nodes.length;
 
     for (var i = 0; i < nodesCount; ++i) {
-      nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace(/\@\d*/, "@" + (i + 1));
+      if (/\@/.test(nodes[nodesCount - 1 - i].innerHTML))
+        nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace(/\@\d*/, callUserSign + (i + 1));
+      else {
+        var regexp = new RegExp(">" + callUserSign + "\\d*");
+        nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace(regexp, ">" + callUserSign + (i + 1));
+      }
     }
 
     getUsernames();
