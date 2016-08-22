@@ -31,14 +31,12 @@ var callUserSign = "#";
 
 var nodesCount = 0;
 
-
 function setCookie(cookieName, cookieValue, expirationDays) {
   var date = new Date();
   date.setTime(date.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
   var expiresIn = "expires="+ date.toUTCString();
   document.cookie = cookieName + "=" + cookieValue + "; " + expiresIn;
 }
-
 
 function appendNumbers() {
   var nodes = document.getElementsByClassName("mChatScriptLink");
@@ -47,19 +45,17 @@ function appendNumbers() {
     nodesCount = nodes.length;
 
     for (var i = 0; i < nodesCount; ++i) {
-      var nodeInnerHTML = nodes[nodesCount - 1 - i].innerHTML
-      if (/\@/.test(nodeInnerHTML))
-        nodeInnerHTML = nodeInnerHTML.replace(/\@\d*/, callUserSign + (i + 1));
+      if (/\@/.test(nodes[nodesCount - 1 - i].innerHTML))
+        nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace(/\@\d*/, callUserSign + (i + 1));
       else {
         var regexp = new RegExp(">" + callUserSign + "\\d*");
-        nodeInnerHTML = nodeInnerHTML.replace(regexp, ">" + callUserSign + (i + 1));
+        nodes[nodesCount - 1 - i].innerHTML = nodes[nodesCount - i - 1].innerHTML.replace(regexp, ">" + callUserSign + (i + 1));
       }
     }
 
     getUsernames();
   }
 }
-
 
 function getUsernames() {
   var nodes = document.getElementsByClassName("mChatScriptLink");
@@ -84,6 +80,7 @@ function getUsernames() {
 
         addColor(color);
       }
+
 
       setCookie("ScriptUsers", users, 1000);
       setCookie("ScriptColors", colors, 1000);
@@ -126,36 +123,36 @@ function verifyColor(arrayPosition, color) {
 
 function parseMessage() {
   var messageNode = document.getElementById("mChatMessage");
-  var messageNodeValue = messageNode.value;
 
-  //@@ or @@number
+  //https://gfycat.com/SoggyUnfitAllensbigearedbat
   {
     var lastShoutRegexp = new RegExp(lastShoutDifferentiator + "\\d*\\s", "g");
 
     if (lastShoutRegexp.test(messageNode.value) === true) {
       var matches = messageNode.value.match(lastShoutRegexp);
       var matchesLength = matches.length;
-
       for (var i = 0; i < matchesLength; ++i) {
         var number;
 
         if (matches[i].length == 3)
           number = document.getElementsByClassName("mChatScriptLink").length - 1;
-        else
+        else {
           number = document.getElementsByClassName("mChatScriptLink").length - /\d/.exec(matches);
+        }
 
         var onClickAction = document.getElementsByClassName("mChatScriptLink")[number].getAttribute("onclick");
         onClickAction = /\'.*\'/.exec(onClickAction);
         onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
-        messageNodeValue = messageNodeValue.replace(lastShoutRegexp, onClickAction + endingChar + " ");
+        messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar + " ");
       }
     }
   }
 
-  //!! or !!number
+  //https://gfycat.com/RealGiganticFlickertailsquirrel
   {
     var vocativeRegexp = [new RegExp(userVocative + "\\d*\\s", "g"), new RegExp(userVocative + "\\w*\\s", "g")];
+
     var regexpLength = vocativeRegexp.length;
 
     for (var i = 0; i < regexpLength; ++i) {
@@ -172,7 +169,7 @@ function parseMessage() {
             var indexOfNick = users.indexOf(nick);
 
             if (indexOfNick != -1) {
-              messageNodeValue = messageNodeValue.replace(matches[j], colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ");
+              messageNode.value = messageNode.value.replace(matches[j], colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ");
             }
           } else {
             // used pattern is !!number
@@ -188,14 +185,14 @@ function parseMessage() {
             onClickAction = /\'.*\'/.exec(onClickAction);
             onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
-            messageNodeValue = messageNodeValue.replace(matches[j], onClickAction + " ");
+            messageNode.value = messageNode.value.replace(matches[j], onClickAction + " ");
           }
         }
       }
     }
   }
 
-  //@nick
+  //https://gfycat.com/IllfatedHairyJuliabutterfly
   {
     var regexp = [new RegExp(nickDifferentiator+"\\w+", "g"), new RegExp("\\w+"+nickDifferentiator, "g")];
     var regexpLength = regexp.length;
@@ -216,7 +213,7 @@ function parseMessage() {
           var index = usersLowerCase.indexOf(nick.toLowerCase());
 
           if (index != -1) {
-            messageNodeValue = messageNodeValue.replace(matches[j], colors[index] == "none" ? "[b]" + users[index] + "[/b]" + endingChar : "[b][color=#" + colors[index] + "]" + users[index] + "[/color][/b]" + endingChar);
+            messageNode.value = messageNode.value.replace(matches[j], colors[index] == "none" ? "[b]" + users[index] + "[/b]" + endingChar : "[b][color=#" + colors[index] + "]" + users[index] + "[/color][/b]" + endingChar);
           }
         }
       }
