@@ -15,6 +15,10 @@
 @Nick <br />
 Nick@
 
+##HISTORIA WOŁAŃ
+
+Zapisywana na bieżąco (podczas jednej sesji) historia wołanych ostatnio osób, można ją przeglądać za pomocą klawiszy strzałek w górę i w dół.
+
 ##WOŁANIE USERÓW Z POPRZEDNICH SHOUTÓW
 @@ // ostatni shout <br />
 @@x // x shout od końca <br />
