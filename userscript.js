@@ -30,6 +30,8 @@ var callUserSign = "#";
 
 
 var nodesCount = 0;
+var useHistory = [];
+var historyIterator = 0;
 
 function setCookie(cookieName, cookieValue, expirationDays) {
   var date = new Date();
@@ -121,7 +123,7 @@ function verifyColor(arrayPosition, color) {
 }
 
 
-function parseMessage() {
+function parseMessage(event) {
   var messageNode = document.getElementById("mChatMessage");
 
   //https://gfycat.com/SoggyUnfitAllensbigearedbat
@@ -144,6 +146,7 @@ function parseMessage() {
         onClickAction = /\'.*\'/.exec(onClickAction);
         onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
+        useHistory[useHistory.length] = onClickAction + endingChar + " ";
         messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar + " ");
       }
     }
@@ -168,7 +171,10 @@ function parseMessage() {
             var indexOfNick = users.indexOf(nick);
 
             if (indexOfNick != -1) {
-              messageNode.value = messageNode.value.replace(matches[j], colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ");
+              var text = colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ";
+
+              useHistory[useHistory.length] = text;
+              messageNode.value = messageNode.value.replace(matches[j], text);
             }
           } else {
             // used pattern is !!number
@@ -184,6 +190,7 @@ function parseMessage() {
             onClickAction = /\'.*\'/.exec(onClickAction);
             onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
+            useHistory[useHistory.length] = onClickAction + " ";
             messageNode.value = messageNode.value.replace(matches[j], onClickAction + " ");
           }
         }
@@ -216,10 +223,53 @@ function parseMessage() {
           var index = usersLowerCase.indexOf(nick.toLowerCase());
 
           if (index != -1) {
-            messageNode.value = messageNode.value.replace(matches[j], colors[index] == "none" ? "[b]" + users[index] + "[/b]" + endingChar + " " : "[b][color=#" + colors[index] + "]" + users[index] + "[/color][/b]" + endingChar + " ");
+            var text = colors[index] == "none" ? "[b]" + users[index] + "[/b]" + endingChar + " " : "[b][color=#" + colors[index] + "]" + users[index] + "[/color][/b]" + endingChar + " ";
+
+            useHistory[useHistory.length] = text;
+            messageNode.value = messageNode.value.replace(matches[j], text);
           }
         }
       }
+    }
+  }
+
+  {
+    var key = event.keyCode || event.charCode;
+
+    if (key == 38) {
+      // ↑
+      historyLength = useHistory.length;
+
+      if (historyLength != 0) {
+        if (historyIterator == 0) {
+          ++historyIterator;
+
+          messageNode.value += useHistory[historyLength - 1];
+        } else if (historyIterator < historyLength) {
+          var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
+
+          messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - ++historyIterator]
+        }
+      }
+    } else if (key == 40) {
+      // ↓
+      historyLength = useHistory.length;
+
+      if (historyIterator == 0) {
+
+      } else if (historyIterator == 1) {
+        var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
+        --historyIterator;
+
+        messageNode.value = messageNode.value.slice(0, index);
+      } else {
+        var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
+
+        messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - --historyIterator]
+      }
+    } else if (key == 32 || key == 39) {
+      // " " || →
+      historyIterator = 0;
     }
   }
 }
@@ -282,7 +332,7 @@ setInterval(function(){ appendNumbers(); }, 100);
 
 {
   var input = document.getElementById("mChatMessage");
-  input.onkeyup = function() { parseMessage(); };
+  input.onkeyup = function() { parseMessage(arguments[0] || window.event); };
 }
 
 setCookie("ScriptUsers", users, 1000);
