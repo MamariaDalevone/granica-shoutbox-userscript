@@ -267,8 +267,8 @@ function parseMessage(event) {
 
         messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - --historyIterator]
       }
-    } else if (key == 32 || key == 39) {
-      // " " || →
+    } else if (key == 32 || key == 39 || key == 13) {
+      // " " || → || return
       historyIterator = 0;
     }
   }
