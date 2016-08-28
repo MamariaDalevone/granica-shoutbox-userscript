@@ -32,6 +32,7 @@ var callUserSign = "#";
 var nodesCount = 0;
 var useHistory = [];
 var historyIterator = 0;
+var historyInUse = false;
 
 function setCookie(cookieName, cookieValue, expirationDays) {
   var date = new Date();
@@ -146,7 +147,7 @@ function parseMessage(event) {
         onClickAction = /\'.*\'/.exec(onClickAction);
         onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
-        useHistory[useHistory.length] = onClickAction + endingChar + " ";
+        useHistory[useHistory.length] = onClickAction + endingChar;
         messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar + " ");
       }
     }
@@ -173,7 +174,7 @@ function parseMessage(event) {
             if (indexOfNick != -1) {
               var text = colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ";
 
-              useHistory[useHistory.length] = text;
+              useHistory[useHistory.length] = text.substring(0, text.length - 1);;
               messageNode.value = messageNode.value.replace(matches[j], text);
             }
           } else {
@@ -190,7 +191,7 @@ function parseMessage(event) {
             onClickAction = /\'.*\'/.exec(onClickAction);
             onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
-            useHistory[useHistory.length] = onClickAction + " ";
+            useHistory[useHistory.length] = onClickAction;
             messageNode.value = messageNode.value.replace(matches[j], onClickAction + " ");
           }
         }
@@ -225,7 +226,7 @@ function parseMessage(event) {
           if (index != -1) {
             var text = colors[index] == "none" ? "[b]" + users[index] + "[/b]" + endingChar + " " : "[b][color=#" + colors[index] + "]" + users[index] + "[/color][/b]" + endingChar + " ";
 
-            useHistory[useHistory.length] = text;
+            useHistory[useHistory.length] = text.substring(0, text.length - 1);
             messageNode.value = messageNode.value.replace(matches[j], text);
           }
         }
@@ -241,6 +242,8 @@ function parseMessage(event) {
       historyLength = useHistory.length;
 
       if (historyLength != 0) {
+        historyInUse = true;
+
         if (historyIterator == 0) {
           ++historyIterator;
 
@@ -258,18 +261,29 @@ function parseMessage(event) {
       if (historyIterator == 0) {
 
       } else if (historyIterator == 1) {
+        historyInUse = true;
+
         var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
         --historyIterator;
 
         messageNode.value = messageNode.value.slice(0, index);
       } else {
+        historyInUse = true;
+
         var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
 
         messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - --historyIterator]
       }
     } else if (key == 32 || key == 39 || key == 13) {
       // " " || → || return
-      historyIterator = 0;
+      if (historyInUse) {
+        var historyLength = useHistory.length;
+        if (historyIterator != 1)
+          useHistory[historyLength] = useHistory[historyLength - historyIterator];
+
+        historyIterator = 0;
+        historyInUse = false;
+      }
     }
   }
 }
