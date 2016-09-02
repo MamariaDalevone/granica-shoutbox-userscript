@@ -147,7 +147,9 @@ function parseMessage(event) {
         onClickAction = /\'.*\'/.exec(onClickAction);
         onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
-        useHistory[useHistory.length] = onClickAction + endingChar;
+        if (useHistory[useHistory.length - 1] != onClickAction + endingChar)
+          useHistory[useHistory.length] = onClickAction + endingChar;
+
         messageNode.value = messageNode.value.replace(lastShoutRegexp, onClickAction + endingChar + " ");
       }
     }
@@ -174,7 +176,9 @@ function parseMessage(event) {
             if (indexOfNick != -1) {
               var text = colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ";
 
-              useHistory[useHistory.length] = text.substring(0, text.length - 1);;
+              if (useHistory[useHistory.length - 1] != text.substring(0, text.length - 1))
+                useHistory[useHistory.length] = text.substring(0, text.length - 1);
+
               messageNode.value = messageNode.value.replace(matches[j], text);
             }
           } else {
@@ -191,7 +195,9 @@ function parseMessage(event) {
             onClickAction = /\'.*\'/.exec(onClickAction);
             onClickAction = onClickAction[0].substring(3, onClickAction[0].length - 3);
 
-            useHistory[useHistory.length] = onClickAction;
+            if (useHistory[useHistory.length - 1] != onClickAction)
+              useHistory[useHistory.length] = onClickAction;
+
             messageNode.value = messageNode.value.replace(matches[j], onClickAction + " ");
           }
         }
@@ -226,7 +232,9 @@ function parseMessage(event) {
           if (index != -1) {
             var text = colors[index] == "none" ? "[b]" + users[index] + "[/b]" + endingChar + " " : "[b][color=#" + colors[index] + "]" + users[index] + "[/color][/b]" + endingChar + " ";
 
-            useHistory[useHistory.length] = text.substring(0, text.length - 1);
+            if (useHistory[useHistory.length - 1] != text.substring(0, text.length - 1))
+              useHistory[useHistory.length] = text.substring(0, text.length - 1);
+            
             messageNode.value = messageNode.value.replace(matches[j], text);
           }
         }
