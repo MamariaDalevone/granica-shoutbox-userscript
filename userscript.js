@@ -234,7 +234,7 @@ function parseMessage(event) {
 
             if (useHistory[useHistory.length - 1] != text.substring(0, text.length - 1))
               useHistory[useHistory.length] = text.substring(0, text.length - 1);
-            
+
             messageNode.value = messageNode.value.replace(matches[j], text);
           }
         }
@@ -253,9 +253,15 @@ function parseMessage(event) {
         historyInUse = true;
 
         if (historyIterator == 0) {
+          var carriagePosition = messageNode.selectionStart;
           ++historyIterator;
 
-          messageNode.value += useHistory[historyLength - 1];
+          messageNode.value = messageNode.value.substring(0, carriagePosition) + useHistory[historyLength - 1] + messageNode.value.substring(carriagePosition, messageNode.value.length - 1);
+
+          carriagePosition += useHistory[historyLength - 1].length;
+
+          messageNode.selectionStart = carriagePosition;
+          messageNode.selectionEnd = carriagePosition;
         } else if (historyIterator < historyLength) {
           var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
 
@@ -283,7 +289,7 @@ function parseMessage(event) {
         messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - --historyIterator]
       }
     } else if (key == 32 || key == 39 || key == 13) {
-      // " " || → || return
+      // space || → || return
       if (historyInUse) {
         var historyLength = useHistory.length;
         if (historyIterator != 1)
@@ -292,6 +298,9 @@ function parseMessage(event) {
         historyIterator = 0;
         historyInUse = false;
       }
+    } /* the tale of history ends here */ else if (key == 9) {
+      // tab
+      console.log("autocompletion isn't ready by now");
     }
   }
 }
