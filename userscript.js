@@ -256,7 +256,7 @@ function parseMessage(event) {
           var carriagePosition = messageNode.selectionStart;
           ++historyIterator;
 
-          messageNode.value = messageNode.value.substring(0, carriagePosition) + useHistory[historyLength - 1] + messageNode.value.substring(carriagePosition, messageNode.value.length - 1);
+          messageNode.value = messageNode.value.substring(0, carriagePosition) + useHistory[historyLength - 1] + messageNode.value.substring(carriagePosition, messageNode.value.length);
 
           carriagePosition += useHistory[historyLength - 1].length;
 
@@ -264,8 +264,16 @@ function parseMessage(event) {
           messageNode.selectionEnd = carriagePosition;
         } else if (historyIterator < historyLength) {
           var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
+          var carriagePosition = messageNode.selectionStart;
+          var previousLength = useHistory[historyLength - historyIterator].length;
 
-          messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - ++historyIterator]
+          messageNode.value = messageNode.value.substring(0, index) + messageNode.value.substring(previousLength + index);
+          carriagePosition -= previousLength;
+          messageNode.value = messageNode.value.substring(0, carriagePosition) + useHistory[historyLength - ++ historyIterator] + messageNode.value.substring(carriagePosition);
+
+          carriagePosition += useHistory[historyLength - historyIterator].length;
+          messageNode.selectionStart = carriagePosition;
+          messageNode.selectionEnd = carriagePosition;
         }
       }
     } else if (key == 40) {
@@ -286,7 +294,7 @@ function parseMessage(event) {
 
         var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
 
-        messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - --historyIterator]
+        messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - --historyIterator];
       }
     } else if (key == 32 || key == 39 || key == 13) {
       // space || → || return
