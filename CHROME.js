@@ -259,7 +259,7 @@ function parseMessage(event) {
         } else if (historyIterator < historyLength) {
           var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
 
-          messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - ++historyIterator];
+          messageNode.value = messageNode.value.substring(0, index) + useHistory[historyLength - ++historyIterator];
           messageNode.selectionEnd = messageNode.value.length;
           messageNode.selectionStart = messageNode.value.length;
         }
@@ -276,19 +276,21 @@ function parseMessage(event) {
         var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
         --historyIterator;
 
-        messageNode.value = messageNode.value.slice(0, index);
+        messageNode.value = messageNode.value.substring(0, index);
       } else {
         historyInUse = true;
 
         var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
 
-        messageNode.value = messageNode.value.slice(0, index) + useHistory[historyLength - --historyIterator]
+        messageNode.value = messageNode.value.substring(0, index) + useHistory[historyLength - --historyIterator]
       }
     } else if (key == 32 || key == 39 || key == 13) {
       // space || → || return
       if (historyInUse) {
         var historyLength = useHistory.length;
-        if (historyIterator != 1)
+        if (historyIterator == 0) {
+
+        } else if (historyIterator != 1)
           useHistory[historyLength] = useHistory[historyLength - historyIterator];
 
         historyIterator = 0;
