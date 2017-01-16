@@ -282,7 +282,7 @@ function parseMessage(event) {
 
         var index = messageNode.value.lastIndexOf(useHistory[historyLength - historyIterator]);
 
-        messageNode.value = messageNode.value.substring(0, index) + useHistory[historyLength - --historyIterator]
+        messageNode.value = messageNode.value.substring(0, index) + useHistory[historyLength - --historyIterator];
       }
     } else if (key == 32 || key == 39 || key == 13) {
       // space || → || return
