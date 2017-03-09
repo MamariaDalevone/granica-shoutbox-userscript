@@ -63,7 +63,7 @@ function appendNumbers() {
 function getUsernames() {
   var nodes = document.getElementsByClassName("mChatScriptLink");
 
-  var nickregexp = /\]\w+\[/;
+  var nickregexp = /\][a-zA-Z0-9_ąĄżŻśŚźŹęĘćĆóÓłŁńŃéÉ]+\[/;
   var colorregexp = /\#\w+/;
 
   for (var i = 0; i < nodesCount; ++i) {
@@ -156,7 +156,7 @@ function parseMessage(event) {
   }
 
   {
-    var vocativeRegexp = [new RegExp(userVocative + "\\d*\\s", "g"), new RegExp(userVocative + "\\w*\\s", "g")];
+    var vocativeRegexp = [new RegExp(userVocative + "\\d*\\s", "g"), new RegExp(userVocative + "\\[a-zA-Z0-9_ąĄżŻśŚźŹęĘćĆóÓłŁńŃéÉ]*\\s", "g"), new RegExp(userVocative + "[a-zA-Z0-9_ąĄżŻśŚźŹęĘćĆóÓłŁńŃéÉ]*-[a-zA-Z0-9_ąĄżŻśŚźŹęĘćĆóÓłŁńŃéÉ]*\\s", "g")];
 
     var regexpLength = vocativeRegexp.length;
 
@@ -167,19 +167,37 @@ function parseMessage(event) {
 
         for (var j = 0; j < matchesLength; ++j) {
           if (matches[j].length > 5) {
-            // used pattern is !!nick
+            if (i === 1) {
+              // used pattern is !!nick
 
-            var nick = matches[j].substring(2, 3).toUpperCase() + matches[j].substring(3, matches[j].length - 1);
+              var nick = matches[j].substring(2, 3).toUpperCase() + matches[j].substring(3, matches[j].length - 1);
 
-            var indexOfNick = users.indexOf(nick);
+              var indexOfNick = users.indexOf(nick);
 
-            if (indexOfNick != -1) {
-              var text = colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ";
+              if (indexOfNick != -1) {
+                var text = colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + "[/color][/b] ";
 
-              if (useHistory[useHistory.length - 1] != text.substring(0, text.length - 1))
-                useHistory[useHistory.length] = text.substring(0, text.length - 1);
+                if (useHistory[useHistory.length - 1] != text.substring(0, text.length - 1))
+                  useHistory[useHistory.length] = text.substring(0, text.length - 1);
 
-              messageNode.value = messageNode.value.replace(matches[j], text);
+                messageNode.value = messageNode.value.replace(matches[j], text);
+              }
+            } else {
+              // used pattern is !!nick with some suffix
+
+              var nick = matches[j].match(new RegExp(userVocative + "\\w*", "g"))[0].substring(2);
+              var suffix = matches[j].match(new RegExp("-\\w*", "g"))[0].substring(1);
+
+              var indexOfNick = users.indexOf(nick);
+
+              if (indexOfNick != -1) {
+                var text = colors[indexOfNick] == "none" ? "[b]" + users[indexOfNick] + suffix + "[/b] " : "[b][color=#" + colors[indexOfNick] + "]" + users[indexOfNick] + suffix + "[/color][/b] ";
+
+                if (useHistory[useHistory.length - 1] != text.substring(0, text.length - 1))
+                  useHistory[useHistory.length] = text.substring(0, text.length - 1);
+
+                messageNode.value = messageNode.value.replace(matches[j], text);
+              }
             }
           } else {
             // used pattern is !!number
@@ -207,7 +225,7 @@ function parseMessage(event) {
 
   //https://gfycat.com/IllfatedHairyJuliabutterfly
   {
-    var regexp = [new RegExp(nickDifferentiator+"\\w+\\s", "g"), new RegExp("\\w+"+nickDifferentiator+"\\s", "g")];
+    var regexp = [new RegExp(nickDifferentiator+"[a-zA-Z0-9_ąĄżŻśŚźŹęĘćĆóÓłŁńŃéÉ]+\\s", "g"), new RegExp("[a-zA-Z0-9_ąĄżŻśŚźŹęĘćĆóÓłŁńŃéÉ]+"+nickDifferentiator+"\\s", "g")];
     var regexpLength = regexp.length;
 
     for (var i = 0; i < regexpLength; ++i) {
